@@ -1,0 +1,35 @@
+version: '3.3'
+
+services:
+  server:
+    container_name: project-api
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - 8080:3333
+    depends_on:
+      - mysqlsvr
+    expose:
+      - 8080
+    env_file:
+      - .env
+    environment:
+      - NODE_ENV=production
+
+  mysqlsvr:
+    container_name: project-database
+    restart: always
+    image: mysql:5.7
+    env_file:
+      - .env
+    environment:
+      MYSQL_DATABASE: ${DB_NAME}
+      MYSQL_PASSWORD: ${DB_PASSWORD}
+      MYSQL_ROOT_PASSWORD: ${DB_PASSWORD}
+    ports:
+      - 3306:3306
+    volumes:
+      - mysql-data:/var/lib/mysql
+volumes:
+  mysql-data:
